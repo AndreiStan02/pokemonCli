@@ -1,5 +1,6 @@
 import { createInterface } from "readline";
 import { getCommands } from "./cliCommands.js";
+import { PokeAPI } from "./pokeapi.js";
 export function initState() {
     const rl = createInterface({
         input: process.stdin,
@@ -7,5 +8,6 @@ export function initState() {
         prompt: "pokedex > ",
     });
     const commands = getCommands();
-    return { rl: rl, commands: commands };
+    const api = new PokeAPI();
+    return { rl: rl, api: api, nextLocation: "", prevLocation: "", commands: commands };
 }

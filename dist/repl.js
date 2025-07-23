@@ -1,12 +1,23 @@
 export function startREPL(state) {
     state.rl.prompt();
-    state.rl.on("line", (input) => {
+    state.rl.on("line", async (input) => {
         const words = cleanInput(input);
+        if (words.length === 0) {
+            state.rl.prompt();
+            return;
+        }
+        const commandName = words[0];
+        const cmd = state.commands[commandName];
+        if (!cmd) {
+            console.log(`Unknown command: "${commandName}". Type "help" for a list of commands.`);
+            state.rl.prompt();
+            return;
+        }
         try {
-            state.commands[words[0]].callback(state);
+            await cmd.callback(state, words[1]);
         }
         catch (err) {
-            console.log("Unknown command");
+            console.log(err.message);
         }
         state.rl.prompt();
     });
