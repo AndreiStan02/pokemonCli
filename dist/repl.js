@@ -1,22 +1,14 @@
-import { createInterface } from "readline/promises";
-import { getCommands } from "./cliCommands.js";
-export function startREPL() {
-    const rl = createInterface({
-        input: process.stdin,
-        output: process.stdout,
-        prompt: "pokedex > ",
-    });
-    rl.prompt();
-    const commands = getCommands();
-    rl.on("line", (input) => {
+export function startREPL(state) {
+    state.rl.prompt();
+    state.rl.on("line", (input) => {
         const words = cleanInput(input);
         try {
-            commands[words[0]].callback(commands);
+            state.commands[words[0]].callback(state);
         }
         catch (err) {
             console.log("Unknown command");
         }
-        rl.prompt();
+        state.rl.prompt();
     });
 }
 export function cleanInput(input) {
