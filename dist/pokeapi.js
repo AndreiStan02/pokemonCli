@@ -7,7 +7,6 @@ export class PokeAPI {
         const url = pageURL || `${PokeAPI.baseURL}/location-area`;
         const val = this.cache.get(url);
         if (val) {
-            console.log("cache");
             return val;
         }
         try {
@@ -27,7 +26,6 @@ export class PokeAPI {
         const fullURL = `${PokeAPI.baseURL}/location-area/${locationName}`;
         const val = this.cache.get(fullURL);
         if (val) {
-            console.log("cache");
             return val;
         }
         try {
@@ -40,6 +38,24 @@ export class PokeAPI {
         }
         catch (err) {
             throw new Error(`Error fetching location: ${err.message}`);
+        }
+    }
+    async fetchPokemon(pokemonName) {
+        const fullURL = `${PokeAPI.baseURL}/pokemon/${pokemonName}`;
+        const val = this.cache.get(fullURL);
+        if (val) {
+            return val;
+        }
+        try {
+            const ans = await fetch(fullURL);
+            if (!ans.ok) {
+                throw new Error(`${ans.status} ${ans.statusText}`);
+            }
+            const pokemon = await ans.json();
+            return pokemon;
+        }
+        catch (err) {
+            throw new Error(`Error fetching pokemon: ${err.message}`);
         }
     }
 }
